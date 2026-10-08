@@ -1,0 +1,81 @@
+datasource db { provider = "sqlite"; url = env("DATABASE_URL") }
+generator client { provider = "prisma-client-js" }
+
+enum OrderStatus { PENDING PAYMENT_PENDING PAID PROCESSING DELIVERED FAILED CANCELLED }
+enum InventoryStatus { AVAILABLE RESERVED SOLD }
+enum PaymentStatus { CREATED REDIRECTED PAID FAILED VERIFIED }
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  orders       Order[]
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  priceCents  Int
+  currency    String   @default("USD")
+  type        String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  orders      Order[]
+  inventory   InventoryCard[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  userId          String?
+  guestEmail      String?
+  productId       String
+  quantity        Int         @default(1)
+  subtotalCents   Int
+  taxCents        Int         @default(0)
+  totalCents      Int
+  status          OrderStatus @default(PENDING)
+  accessTokenHash String
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  paidAt          DateTime?
+  user            User?       @relation(fields:[userId], references:[id])
+  product         Product     @relation(fields:[productId], references:[id])
+  payments        Payment[]
+  inventoryCard   InventoryCard?
+  @@index([guestEmail])
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  orderId       String
+  authority     String?
+  gateway       String
+  amountCents   Int
+  status        PaymentStatus @default(CREATED)
+  rawCallback   String?
+  createdAt     DateTime      @default(now())
+  verifiedAt    DateTime?
+  order         Order         @relation(fields:[orderId], references:[id])
+  @@index([orderId])
+}
+
+model InventoryCard {
+  id          String          @id @default(cuid())
+  productId   String
+  cardType    String
+  cardNumber  String
+  holderName  String
+  expiryDate  String
+  cvv         String
+  status      InventoryStatus @default(AVAILABLE)
+  reservedUntil DateTime?
+  createdAt   DateTime        @default(now())
+  soldAt      DateTime?
+  orderId     String?         @unique
+  product     Product         @relation(fields:[productId], references:[id])
+  order       Order?          @relation(fields:[orderId], references:[id])
+  @@index([productId, status])
+}
