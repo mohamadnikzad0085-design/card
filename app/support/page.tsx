@@ -1,0 +1,2 @@
+import {config} from '@/lib/config';
+export default function Support(){return <div className="container section"><div className="panel form"><h2>پشتیبانی</h2><p className="muted">راه‌های ارتباطی را در Environment تنظیم کنید.</p><p>ایمیل: {config.supportEmail||'هنوز تنظیم نشده'}</p><p>Telegram: {config.telegramUrl?'فعال':'هنوز تنظیم نشده'}</p><p>WhatsApp: {config.whatsappUrl?'فعال':'هنوز تنظیم نشده'}</p><div className="notice">فرم ارسال درخواست در این نسخه عمداً بدون سرویس ایمیل خارجی ساخته نشده؛ برای ارسال واقعی، SMTP یا سرویس تیکت باید متصل شود.</div></div></div>}
