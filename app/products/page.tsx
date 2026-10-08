@@ -1,0 +1,3 @@
+import Link from 'next/link';import {db} from '@/lib/db';
+export const dynamic='force-dynamic';
+export default async function Products(){const products=await db.product.findMany({where:{active:true},include:{_count:{select:{inventory:true}}}});return <div className="container section"><h2>محصولات</h2><p className="sectionLead">محصولات فعال و وضعیت موجودی لحظه‌ای.</p><div className="grid">{products.map(p=><div className="panel" key={p.id}><span className="tag">{p.type}</span><h3>{p.name}</h3><p className="muted">{p.description}</p><div className="price">${(p.priceCents/100).toFixed(2)}</div>{p._count.inventory>0?<Link className="btn primary" href={'/checkout?product='+p.id}>خرید</Link>:<button className="btn" disabled>ناموجود</button>}</div>)}</div></div>}
