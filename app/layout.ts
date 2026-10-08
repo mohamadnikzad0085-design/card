@@ -1,0 +1,4 @@
+import './globals.css';
+import Link from 'next/link';
+export const metadata={title:'VirtualCard | کارت‌های مجازی امن و سریع',description:'فروشگاه کارت مجازی'};
+export default function Layout({children}:{children:React.ReactNode}){return <><header className="header"><div className="container nav"><Link className="brand" href="/">Virtual<span>Card</span></Link><nav className="links"><Link href="/">خانه</Link><Link href="/products">محصولات</Link><Link href="/guide">راهنما</Link><Link href="/orders">سفارشات</Link><Link href="/support">پشتیبانی</Link></nav><div className="actions"><Link className="btn" href="/login">ورود / ثبت‌نام</Link></div></div></header><main>{children}</main><footer className="footer"><div className="container">VirtualCard — فروش امن و تحویل پس از تأیید پرداخت</div></footer></>}
