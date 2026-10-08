@@ -1,0 +1,1 @@
+import {NextResponse} from 'next/server';import {db} from '@/lib/db';import {getUserId} from '@/lib/auth';export async function GET(){const id=await getUserId();if(!id)return NextResponse.json({error:'وارد حساب نشده‌اید.'},{status:401});const orders=await db.order.findMany({where:{userId:id},include:{product:true},orderBy:{createdAt:'desc'}});return NextResponse.json(orders)}
